@@ -1,13 +1,13 @@
 version: 2
 jobs:
-    build:
-    　docker:
-        - image: alpine
-    　steps:
-        - checkout
-        - run:
-            name: Echo Test
-            command: echo "CircleCI EC2 Test"
+  build:
+    docker:
+      - image: alpine
+    steps:
+      - checkout
+      - run:
+        name: Echo Test
+        command: echo "CircleCI EC2 Test"
 
   deploy:
     machine:
