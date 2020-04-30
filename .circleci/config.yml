@@ -2,12 +2,37 @@ version: 2
 jobs:
   build:
     docker:
-      - image: alpine
+      - image: circleci/php:7.3-node-browsers
+        environment:
+          - APP_DEBUG: true
+          - APP_ENV: testing
+          - DB_CONNECTION: mysql
+          - DB_DATABASE: laravel
+          - DB_USERNAME: root
+
     steps:
       - checkout
-      - run:
-        name: Echo Test
-        command: echo "CircleCI EC2 Test"
+
+      - run: sudo apt update
+      - run: sudo docker-php-ext-install pdo_mysql
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "composer.json" }}
+            - v1-dependencies-
+
+      - run: composer install -n --prefer-dist
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "composer.json" }}
+          paths:
+            - ./vendor
+
+      - run: echo "APP_KEY=" > .env
+      - run: php artisan key:generate
+      #- run: php artisan migrate
+
+      - run: ./vendor/bin/phpunit
 
   deploy:
     machine:
@@ -15,8 +40,6 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints:
-            - "84:6f:f7:ba:08:c2:96:c6:88:9a:25:af:d1:d0:ef:bf"
       - run: ssh ${USER_NAME}@${HOST_NAME} 'cd /var/www/aws-laravel/ && git pull origin master'
 
 workflows:
