@@ -10,6 +10,11 @@ jobs:
           - DB_DATABASE: laravel
           - DB_USERNAME: root
 
+      - image: circleci/mysql:5.7-ram
+        environment:
+          - MYSQL_ALLOW_EMPTY_PASSWORD: true
+          - MYSQL_DATABASE: laravel
+
     steps:
       - checkout
 
@@ -30,7 +35,7 @@ jobs:
 
       - run: echo "APP_KEY=" > .env
       - run: php artisan key:generate
-      #- run: php artisan migrate
+      - run: php artisan migrate
 
       - run: ./vendor/bin/phpunit
 
