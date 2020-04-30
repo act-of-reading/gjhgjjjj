@@ -1,14 +1,44 @@
 version: 2
 
 jobs:
-  build:
-    docker:
-      - image: alpine
-    steps:
-      - checkout
-      - run:
-          name: Echo Test
-          command: echo "CircleCI Test"
+    build:
+        docker:
+          - image: circleci/php:7.3-node-browsers
+            environment:
+              - APP_DEBUG: true
+              - APP_ENV: testing
+              - DB_CONNECTION: mysql
+              - DB_DATABASE: test_sample01
+              - DB_USERNAME: root
+     
+          - image: circleci/mysql:5.7-ram
+            environment:
+              - MYSQL_ALLOW_EMPTY_PASSWORD: true
+              - MYSQL_DATABASE: test_sample01
+     
+        steps:
+          - checkout
+     
+          - run: sudo apt update
+          - run: sudo docker-php-ext-install pdo_mysql
+     
+          - restore_cache:
+              keys:
+                - v1-dependencies-{{ checksum "composer.json" }}
+                - v1-dependencies-
+     
+          - run: composer install -n --prefer-dist
+     
+          - save_cache:
+              key: v1-dependencies-{{ checksum "composer.json" }}
+              paths:
+                - ./vendor
+     
+          - run: echo "APP_KEY=" > .env.testing
+          - run: php artisan key:generate
+          - run: php artisan migrate
+     
+          - run: ./vendor/bin/phpunit
   # EC2 に SSH 接続・デプロイを実行
   deploy:
     machine:
@@ -18,7 +48,9 @@ jobs:
       # CircleCI に登録した秘密鍵を呼び出す
       - add_ssh_keys:
       # CircleCI に登録した環境変数を使って SSH
-      - run: ssh ${USER_NAME}@${HOST_NAME} 'cd /var/www/aws-laravel/ && git pull origin master'
+      - run:
+        name: ssh
+        command: ssh ${USER_NAME}@${HOST_NAME} 'cd /var/www/aws-laravel/ && git pull origin master'
 
 workflows:
   version: 2
