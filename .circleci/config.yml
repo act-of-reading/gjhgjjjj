@@ -36,15 +36,11 @@ jobs:
 
   deploy:
     machine:
-      image: circleci/classic:edge
-      steps:
-        - checkout
-        # CircleCI に登録した秘密鍵を呼び出す
-        - add_ssh_keys:
-        # CircleCI に登録した環境変数を使って SSH
-        - run:
-          name: ssh
-          command: ssh ${USER_NAME}@${HOST_NAME} 'cd /var/www/aws-laravel/ && git pull origin master'
+      - image: circleci/classic:edge
+          steps:
+            - checkout
+            - add_ssh_keys:
+            - run: ssh ${USER_NAME}@${HOST_NAME} 'cd /var/www/aws-laravel/ && git pull origin master'
 
 workflows:
   version: 2
