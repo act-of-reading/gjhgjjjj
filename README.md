@@ -9,4 +9,4 @@
 修正した
 deploykey テスト
 hostname を変更
-ssh 削除
+ssh 適当
