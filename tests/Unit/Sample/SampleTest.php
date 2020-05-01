@@ -11,7 +11,7 @@ class SampleTest extends TestCase
     {
         $sample = new Sample;
         $sum = $sample->add(5, 3);
-        $this->assertEquals(88, $sum);
+        $this->assertEquals(8, $sum);
     }
 
     /**
