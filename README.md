@@ -14,3 +14,4 @@ aiueo
 fggh
 ssh なし
 っっｈ
+dou?
