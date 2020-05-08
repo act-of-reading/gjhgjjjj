@@ -7,3 +7,20 @@
 やったぜ
 ブランチ作成
 修正した
+deploykey テスト
+hostname を変更
+ssh 適当
+aiueo
+fggh
+ssh なし
+っっｈ
+dou?
+やってみた
+やってみた 2
+はずしあ
+test3
+test4 ブランチ
+公開鍵削除
+test5
+dev 追加
+今度は dev1 にプルリク
