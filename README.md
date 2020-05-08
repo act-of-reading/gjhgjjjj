@@ -22,3 +22,4 @@ test3
 test4 ブランチ
 公開鍵削除
 test5
+dev 追加
